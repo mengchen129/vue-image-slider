@@ -45,7 +45,11 @@
             }
         },
         mounted: function() {
-            Object.assign(this.slideParams, this.params);
+            for (var paramKey in this.params) {
+                if (this.params.hasOwnProperty(paramKey)) {
+                    this.slideParams[paramKey] = this.params[paramKey];
+                }
+            }
             if (this.slideParams.autoPlay) {
                 this.playTimer = setInterval(() => {
                     if (this.playPause) return;
