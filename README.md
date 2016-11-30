@@ -4,7 +4,7 @@
 
 ## Demo
 
-[查看Demo](http://182.92.167.237/pages/vue-image-slider/)
+[查看Demo](https://mengchen129.github.io/vue-image-slider/)
 
 ## 功能
 
