@@ -1,6 +1,14 @@
 <template>
     <div>
-        <div class="slider-container" @touchstart="swipeStart" @touchmove="swipeMove" @touchend="swipeEnd">
+        <div class="slider-container"
+             @touchstart="swipeStart"
+             @touchmove="swipeMove"
+             @touchend="swipeEnd"
+
+             @mousedown="swipeStart"
+             @mousemove="swipeMove"
+             @mouseup="swipeEnd"
+        >
             <div class="slider-wrap" :style="transformObj">
                 <div class="slider-item" v-for="img in images">
                     <img class="slide-img" :src="img">
@@ -18,9 +26,42 @@
 </template>
 
 <script>
+    const isMobile = 'ontouchstart' in window;
+
     function docTouchStart(e) {
         e.preventDefault();
     }
+
+    function getClientX(e) {
+        if (!isMobile) {
+            return e.clientX;
+        }
+        if (!(e.touches || e.changedTouches)) return;
+        return (e.touches[0] || e.changedTouches[0]).clientX;
+    }
+
+    var TimerUtils = (function() {
+        var _timer, _func, _interval;
+
+        return {
+            schedule: function(func, interval) {
+                _func = func;
+                _interval = interval;
+                return this;
+            },
+            start: function() {
+                _timer = setInterval(_func, _interval);
+                return this;
+            },
+            stop: function() {
+                if (_timer) {
+                    clearInterval(_timer);
+                    _timer = null;
+                }
+                return this;
+            }
+        }
+    })();
 
     export default {
         name: 'image-slider',
@@ -33,7 +74,6 @@
                 moveStartTime: 0,
                 manualOffset: 0,
                 playTimer: null,
-                playPause: false,
                 winWidth: window.innerWidth,
 
                 slideParams: {
@@ -51,10 +91,9 @@
                 }
             }
             if (this.slideParams.autoPlay) {
-                this.playTimer = setInterval(() => {
-                    if (this.playPause) return;
+                this.playTimer = TimerUtils.schedule(() => {
                     this.slideIndex = (this.slideIndex + 1) % this.itemCount;
-                }, this.slideParams.autoPlayInterval);
+                }, this.slideParams.autoPlayInterval).start();
             }
 
             window.addEventListener('resize', () => {
@@ -92,11 +131,13 @@
             },
             swipeStart: function(e) {
                 document.addEventListener('touchmove', docTouchStart);
-                this.startX = e.touches[0].clientX;
-                this.playPause = true;
+                this.startX = getClientX(e);
+                this.playTimer.stop();      // 手动操作开始后关闭自动轮播计时
             },
             swipeMove: function(e) {
-                var moveX = e.touches[0].clientX;
+                if (!this.startX) return;       // PC: 如果直接mousemove则不做处理
+                e.preventDefault();             // PC: 阻止默认行为, 防止产生拖拽图片
+                var moveX = getClientX(e);
                 this.manualOffset = moveX - this.startX;
                 if (!this.moveStartTime) {
                     this.moveStartTime = new Date().getTime();
@@ -104,8 +145,7 @@
             },
             swipeEnd: function(e) {
                 document.removeEventListener('touchmove', docTouchStart);
-                var touch = e.changedTouches[0];
-                var endX = touch.clientX;
+                var endX = getClientX(e);
                 var moveEndTime = new Date().getTime();
                 var moveDistance = endX - this.startX;
                 var moveDistanceAbs = Math.abs(moveDistance);
@@ -115,7 +155,7 @@
                 this.manualOffset = 0;
                 this.startX = 0;
                 this.moveStartTime = 0;
-                this.playPause = false;
+                this.playTimer.start();     // 手动操作结束后重新启动自动轮播计时
 
                 if (moveDistanceAbs > this.slideParams.minMoveDistance && moveSpeed > this.slideParams.minMoveSpeed) {
                     moveDistance < 0 ? this.slideNext() : this.slidePrev();
@@ -128,7 +168,7 @@
 <style>
     .slider-container {
         width: 100%;
-        height: 180px;
+        height: auto;
         overflow: hidden;
         position: relative;
     }
