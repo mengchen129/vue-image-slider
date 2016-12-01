@@ -1,5 +1,12 @@
 <template>
-    <image-slider :images="images" :params="{minMoveDistance: 50, autoPlay: true}"></image-slider>
+    <div>
+        <image-slider :images="images" :params="{minMoveDistance: 50, autoPlay: true}"></image-slider>
+
+        <div style="margin-top: 20px;">
+            <button @click="changeImages3">更换图片(3张)</button>
+            <button @click="changeImages2">更换图片(2张)</button>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -12,14 +19,29 @@ export default {
   data () {
     return {
         images: [
-            "http://img.ishequ360.com/banner/4daee25ccc0449477605401de47ac159.jpeg",
-            "http://img.ishequ360.com/banner/c0bf89b74d46b1497f8c9707354a3017.jpeg",
-            "http://img.ishequ360.com/banner/840016472ad9b260bf3e3ada43760c7a.jpeg",
-            "http://img.ishequ360.com/banner/08ed471e7648ca62b0636a638e2bb757.jpeg",
-            "http://img.ishequ360.com/banner/b5eb09330d341b42127f18a4263dfe62.jpeg"
+            "http://img.ishequ360.com/images/test/banner1@1x.jpeg",
+            "http://img.ishequ360.com/images/test/banner2@1x.jpeg",
+            "http://img.ishequ360.com/images/test/banner3@1x.jpeg",
+            "http://img.ishequ360.com/images/test/banner4@1x.jpeg",
+            "http://img.ishequ360.com/images/test/banner5@1x.jpeg",
         ]
     }
-  }
+  },
+    methods: {
+        changeImages3: function() {
+            this.images = [
+                "http://img.ishequ360.com/images/test/banner1@1x.jpeg",
+                "http://img.ishequ360.com/images/test/banner2@1x.jpeg",
+                "http://img.ishequ360.com/images/test/banner3@1x.jpeg",
+            ];
+        },
+        changeImages2: function() {
+            this.images = [
+                "http://img.ishequ360.com/images/test/banner4@1x.jpeg",
+                "http://img.ishequ360.com/images/test/banner5@1x.jpeg",
+            ];
+        }
+    }
 }
 </script>
 
@@ -29,4 +51,12 @@ export default {
     padding: 0;
     box-sizing: border-box;
   }
+
+    button {
+        background-color: green;
+        color: #ffffff;
+        border-radius: 3px;
+        padding: 5px 10px;
+        border: none;
+    }
 </style>

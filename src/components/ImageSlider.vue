@@ -10,8 +10,8 @@
              @mouseup="swipeEnd"
         >
             <div class="slider-wrap" :style="transformObj">
-                <div class="slider-item" v-for="img in images">
-                    <img class="slide-img" :src="img">
+                <div class="slider-item" v-for="img in imageList">
+                    <img class="slide-img" v-lazy="img">
                 </div>
             </div>
 
@@ -68,6 +68,7 @@
         props: ['images', 'params'],
         data() {
             return {
+                imageList: [],
                 slideIndex: 0,
                 slideIndexTemp: 0,
                 startX: 0,
@@ -84,7 +85,17 @@
                 }
             }
         },
+        watch: {
+            images: function(val) {     // 当图片集合变化时,先清除图片的lazyload缓存,然后在DOM更新后渲染新的内容
+                this.imageList = [];
+                this.$nextTick(() => {
+                    this.imageList = val;
+                    this.slideIndex = 0;
+                });
+            }
+        },
         mounted: function() {
+            this.imageList = this.images;
             for (var paramKey in this.params) {
                 if (this.params.hasOwnProperty(paramKey)) {
                     this.slideParams[paramKey] = this.params[paramKey];
