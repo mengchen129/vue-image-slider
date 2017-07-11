@@ -20,7 +20,7 @@ export default {
     return {
         images: [
             "http://img.ishequ360.com/images/test/banner1@1x.jpeg",
-            "http://img.ishequ360.com/images/test/banner2@1x.jpeg",
+            "http://img.ishequ360.com/images/test/banner6@1x.jpeg",
             "http://img.ishequ360.com/images/test/banner3@1x.jpeg",
             "http://img.ishequ360.com/images/test/banner4@1x.jpeg",
             "http://img.ishequ360.com/images/test/banner5@1x.jpeg",
@@ -31,7 +31,7 @@ export default {
         changeImages3: function() {
             this.images = [
                 "http://img.ishequ360.com/images/test/banner1@1x.jpeg",
-                "http://img.ishequ360.com/images/test/banner2@1x.jpeg",
+                "http://img.ishequ360.com/images/test/banner6@1x.jpeg",
                 "http://img.ishequ360.com/images/test/banner3@1x.jpeg",
             ];
         },
